@@ -21,7 +21,7 @@
 
 <header class="header">
 
-    <a href="#" class="logo"> <i class="fas fa-hiking"></i> travelWithMe. </a>
+    <a href="#" class="logo"> <i class="fas fa-hiking"></i> travelWithVipin. </a>
 
     <nav class="navbar">
         <div id="nav-close" class="fas fa-times"></div>
